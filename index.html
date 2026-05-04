@@ -262,32 +262,9 @@
   .verdict.neutral .verdict-title { color: #F59E0B; }
   .verdict-desc { font-size: 12px; font-weight: 500; color: #6B7280; line-height: 1.65; }
 
-  /* CTA */
-  .calc-cta {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .cta-wa {
-    flex: 1;
-    background: #25D366;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 14px 20px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: transform 0.15s, opacity 0.15s;
-    min-width: 200px;
-  }
-  .cta-wa:hover { opacity: 0.9; transform: translateY(-1px); }
+  /* RESET */
   .cta-reset {
+    width: 100%;
     background: rgba(255,255,255,0.06);
     color: #64748b;
     font-size: 13px;
@@ -297,7 +274,6 @@
     border: 1px solid rgba(255,255,255,0.08);
     cursor: pointer;
     transition: background 0.15s;
-    white-space: nowrap;
   }
   .cta-reset:hover { background: rgba(255,255,255,0.1); }
 
@@ -445,13 +421,8 @@
         </div>
       </div>
 
-      <!-- CTA -->
-      <div class="calc-cta">
-        <a class="cta-wa" id="waLink" href="https://api.whatsapp.com/send?phone=601111410293&text=Salam%20Kak%20Tikah!%20Saya%20berminat%20nak%20tahu%20lebih%20lanjut%20tentang%20ASBF.%20Boleh%20bantu%20semak%20kelayakan%20saya?" target="_blank">
-          💬 WhatsApp Atikah — Semak Kelayakan
-        </a>
-        <button class="cta-reset" onclick="resetCalc()">↺ Reset</button>
-      </div>
+      <!-- RESET -->
+      <button class="cta-reset" onclick="resetCalc()">↺ Reset Kalkulator</button>
     </div>
 
   </div>
@@ -555,9 +526,7 @@
       vDesc.textContent = `Pada kadar ini, kos pinjaman melebihi dividen yang dijangka. Cuba kurangkan kadar pinjaman atau pilih tempoh lebih pendek. Hubungi Atikah untuk dapatkan kadar terbaik yang tersedia.`;
     }
 
-    // WhatsApp message
-    const msg = `Salam Kak Tikah! Saya dah guna kalkulator ASBF. Jumlah: RM${jumlah.toLocaleString('ms-MY')}, Tempoh: ${tempoh} tahun, Kadar pinjaman: ${kadarPinjaman}%, Ansuran bulanan: ${fmt(ansuran)}. Boleh bantu saya semak kelayakan?`;
-    document.getElementById('waLink').href = `https://api.whatsapp.com/send?phone=601111410293&text=${encodeURIComponent(msg)}`;
+
   }
 
   function resetCalc() {
