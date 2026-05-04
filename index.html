@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator ASBF | Nor Atikah</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #0A1628;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+
+  .calc-wrapper {
+    width: 100%;
+    max-width: 780px;
+  }
+
+  /* HEADER */
+  .calc-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .calc-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 5px 16px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .calc-title {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+  .calc-title span { color: #3B82F6; }
+  .calc-sub {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+  }
+
+  /* MAIN CARD */
+  .calc-card {
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  /* INPUT SECTION */
+  .calc-inputs {
+    padding: 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 8px; }
+  .input-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .input-val-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .input-display {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .input-display.blue { color: #3B82F6; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #1F2937;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3B82F6;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid #0A1628;
+    box-shadow: 0 0 0 2px #3B82F6;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 500;
+    color: #374151;
+    margin-top: 4px;
+  }
+
+  /* RATE ROW */
+  .rate-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* OUTPUT SECTION */
+  .calc-output {
+    padding: 28px 32px;
+    background: #0D1520;
+  }
+
+  .output-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .output-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .output-main {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .out-card {
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .out-card.highlight {
+    border-color: #3B82F6;
+    background: rgba(59,130,246,0.08);
+  }
+  .out-card.profit {
+    border-color: #10B981;
+    background: rgba(16,185,129,0.08);
+  }
+  .out-card.loss {
+    border-color: #EF4444;
+    background: rgba(239,68,68,0.08);
+  }
+  .out-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #4B5563;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .out-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .out-val.blue { color: #3B82F6; }
+  .out-val.green { color: #10B981; }
+  .out-val.red { color: #EF4444; }
+  .out-val.amber { color: #F59E0B; }
+  .out-sub {
+    font-size: 10px;
+    font-weight: 500;
+    color: #4B5563;
+    margin-top: 4px;
+  }
+
+  /* BREAKDOWN */
+  .breakdown {
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .breakdown-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .bk-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .bk-row:last-child { border-bottom: none; }
+  .bk-label { font-weight: 500; color: #6B7280; }
+  .bk-val { font-weight: 700; color: #fff; }
+  .bk-val.green { color: #10B981; }
+  .bk-val.red { color: #EF4444; }
+  .bk-val.amber { color: #F59E0B; }
+
+  /* VERDICT */
+  .verdict {
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .verdict.positive { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); }
+  .verdict.negative { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); }
+  .verdict.neutral { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); }
+  .verdict-icon { font-size: 24px; flex-shrink: 0; }
+  .verdict-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .verdict.positive .verdict-title { color: #10B981; }
+  .verdict.negative .verdict-title { color: #EF4444; }
+  .verdict.neutral .verdict-title { color: #F59E0B; }
+  .verdict-desc { font-size: 12px; font-weight: 500; color: #6B7280; line-height: 1.65; }
+
+  /* CTA */
+  .calc-cta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cta-wa {
+    flex: 1;
+    background: #25D366;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: transform 0.15s, opacity 0.15s;
+    min-width: 200px;
+  }
+  .cta-wa:hover { opacity: 0.9; transform: translateY(-1px); }
+  .cta-reset {
+    background: rgba(255,255,255,0.06);
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .cta-reset:hover { background: rgba(255,255,255,0.1); }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: #1F2937;
+    margin-top: 16px;
+    line-height: 1.7;
+    padding: 0 8px;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width: 560px) {
+    .input-grid, .rate-row, .output-main { grid-template-columns: 1fr; }
+    .calc-inputs, .calc-output { padding: 20px; }
+    .out-val { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="calc-wrapper">
+
+  <!-- HEADER -->
+  <div class="calc-header">
+    <div class="calc-badge">🏦 Pelaburan ASB</div>
+    <div class="calc-title">Kalkulator <span>ASBF</span></div>
+    <div class="calc-sub">Kira ansuran bulanan & potensi keuntungan pelaburan ASB Financing anda</div>
+  </div>
+
+  <!-- CALCULATOR CARD -->
+  <div class="calc-card">
+
+    <!-- INPUTS -->
+    <div class="calc-inputs">
+
+      <div class="input-grid">
+        <!-- Jumlah Pembiayaan -->
+        <div class="input-group">
+          <div class="input-label">💰 Jumlah Pembiayaan</div>
+          <div class="input-val-row">
+            <div class="input-display blue" id="dispJumlah">RM 100,000</div>
+          </div>
+          <input type="range" id="sliderJumlah" min="10000" max="200000" step="5000" value="100000" oninput="update()">
+          <div class="range-labels"><span>RM 10k</span><span>RM 200k</span></div>
+        </div>
+
+        <!-- Tempoh -->
+        <div class="input-group">
+          <div class="input-label">📅 Tempoh Pembiayaan</div>
+          <div class="input-val-row">
+            <div class="input-display blue" id="dispTempoh">15 Tahun</div>
+          </div>
+          <input type="range" id="sliderTempoh" min="5" max="30" step="1" value="15" oninput="update()">
+          <div class="range-labels"><span>5 Thn</span><span>30 Thn</span></div>
+        </div>
+      </div>
+
+      <div class="rate-row">
+        <!-- Kadar Pinjaman -->
+        <div class="input-group">
+          <div class="input-label">🏦 Kadar Pinjaman Bank (% p.a.)</div>
+          <div class="input-val-row">
+            <div class="input-display" id="dispKadarPinjaman">4.50%</div>
+          </div>
+          <input type="range" id="sliderKadarPinjaman" min="3.5" max="6.5" step="0.05" value="4.5" oninput="update()">
+          <div class="range-labels"><span>3.50%</span><span>6.50%</span></div>
+        </div>
+
+        <!-- Dividen ASB -->
+        <div class="input-group">
+          <div class="input-label">📈 Jangkaan Dividen ASB (% p.a.)</div>
+          <div class="input-val-row">
+            <div class="input-display" id="dispDividen">5.50%</div>
+          </div>
+          <input type="range" id="sliderDividen" min="3.0" max="8.0" step="0.05" value="5.5" oninput="update()">
+          <div class="range-labels"><span>3.0%</span><span>8.0%</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="calc-output">
+
+      <div class="output-title">📊 Keputusan Analisa</div>
+
+      <!-- 3 KEY METRICS -->
+      <div class="output-main">
+        <div class="out-card highlight">
+          <div class="out-label">Ansuran Bulanan</div>
+          <div class="out-val blue" id="outAnsuran">RM 0</div>
+          <div class="out-sub">Bayar ke bank sebulan</div>
+        </div>
+        <div class="out-card">
+          <div class="out-label">Dividen Tahunan (Est.)</div>
+          <div class="out-val amber" id="outDividenTahunan">RM 0</div>
+          <div class="out-sub">Dari ASB setiap tahun</div>
+        </div>
+        <div class="out-card" id="profitCard">
+          <div class="out-label">Untung / Rugi Tahunan</div>
+          <div class="out-val" id="outProfit">RM 0</div>
+          <div class="out-sub" id="outProfitSub">—</div>
+        </div>
+      </div>
+
+      <!-- DETAILED BREAKDOWN -->
+      <div class="breakdown">
+        <div class="breakdown-title">Pecahan Terperinci</div>
+        <div class="bk-row">
+          <span class="bk-label">Jumlah Pembiayaan</span>
+          <span class="bk-val" id="bkJumlah">RM 100,000</span>
+        </div>
+        <div class="bk-row">
+          <span class="bk-label">Jumlah Bayar ke Bank (sepanjang tempoh)</span>
+          <span class="bk-val red" id="bkJumlahBayar">RM 0</span>
+        </div>
+        <div class="bk-row">
+          <span class="bk-label">Jumlah Faedah Pinjaman Dibayar</span>
+          <span class="bk-val red" id="bkFaedah">RM 0</span>
+        </div>
+        <div class="bk-row">
+          <span class="bk-label">Jumlah Dividen ASB Diterima (Anggaran)</span>
+          <span class="bk-val green" id="bkDividenTotal">RM 0</span>
+        </div>
+        <div class="bk-row">
+          <span class="bk-label">Nilai Akhir ASB + Dividen Kompaun</span>
+          <span class="bk-val amber" id="bkNilaiAkhir">RM 0</span>
+        </div>
+        <div class="bk-row">
+          <span class="bk-label">Keuntungan / Kerugian Bersih</span>
+          <span class="bk-val" id="bkNetProfit">RM 0</span>
+        </div>
+      </div>
+
+      <!-- VERDICT -->
+      <div class="verdict" id="verdictBox">
+        <div class="verdict-icon" id="verdictIcon">💡</div>
+        <div>
+          <div class="verdict-title" id="verdictTitle">Mengira...</div>
+          <div class="verdict-desc" id="verdictDesc">Laraskan slider untuk melihat analisa.</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="calc-cta">
+        <a class="cta-wa" id="waLink" href="https://api.whatsapp.com/send?phone=601111410293&text=Salam%20Kak%20Tikah!%20Saya%20berminat%20nak%20tahu%20lebih%20lanjut%20tentang%20ASBF.%20Boleh%20bantu%20semak%20kelayakan%20saya?" target="_blank">
+          💬 WhatsApp Atikah — Semak Kelayakan
+        </a>
+        <button class="cta-reset" onclick="resetCalc()">↺ Reset</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    *Pengiraan adalah anggaran sahaja berdasarkan kadar dividen yang diunjurkan.<br>
+    Dividen ASB tidak dijamin dan boleh berubah mengikut prestasi dana sebenar.<br>
+    Sila dapatkan nasihat kewangan profesional sebelum membuat keputusan pelaburan.
+  </div>
+
+</div>
+
+<script>
+  function fmt(num) {
+    return 'RM ' + Math.abs(num).toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function update() {
+    const jumlah       = parseFloat(document.getElementById('sliderJumlah').value);
+    const tempoh       = parseFloat(document.getElementById('sliderTempoh').value);
+    const kadarPinjaman = parseFloat(document.getElementById('sliderKadarPinjaman').value);
+    const kadarDividen  = parseFloat(document.getElementById('sliderDividen').value);
+
+    // Update display labels
+    document.getElementById('dispJumlah').textContent        = 'RM ' + jumlah.toLocaleString('ms-MY');
+    document.getElementById('dispTempoh').textContent        = tempoh + ' Tahun';
+    document.getElementById('dispKadarPinjaman').textContent = kadarPinjaman.toFixed(2) + '%';
+    document.getElementById('dispDividen').textContent       = kadarDividen.toFixed(2) + '%';
+
+    // Loan calc
+    const r       = (kadarPinjaman / 100) / 12;
+    const n       = tempoh * 12;
+    const ansuran = jumlah * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    const jumlahBayar = ansuran * n;
+    const jumlahFaedah = jumlahBayar - jumlah;
+
+    // ASB Dividend — compounding annually on full principal
+    const kadarD = kadarDividen / 100;
+    let asbValue = jumlah;
+    let totalDividen = 0;
+    for (let i = 0; i < tempoh; i++) {
+      const div = asbValue * kadarD;
+      totalDividen += div;
+      asbValue += div; // reinvest dividen
+    }
+    const nilaiAkhir = asbValue;
+    const dividenTahunan = jumlah * kadarD;
+
+    // Profit
+    const netProfit = nilaiAkhir - jumlahBayar;
+    const profitTahunan = dividenTahunan - (ansuran * 12);
+
+    // Update outputs
+    document.getElementById('outAnsuran').textContent      = fmt(ansuran);
+    document.getElementById('outDividenTahunan').textContent = fmt(dividenTahunan);
+
+    // Profit card
+    const profitCard = document.getElementById('profitCard');
+    const outProfit  = document.getElementById('outProfit');
+    const outProfitSub = document.getElementById('outProfitSub');
+    profitCard.className = 'out-card ' + (profitTahunan >= 0 ? 'profit' : 'loss');
+    outProfit.className  = 'out-val ' + (profitTahunan >= 0 ? 'green' : 'red');
+    outProfit.textContent = (profitTahunan >= 0 ? '+' : '-') + fmt(profitTahunan);
+    outProfitSub.textContent = profitTahunan >= 0 ? 'Untung bersih / tahun' : 'Kos bersih / tahun';
+
+    // Breakdown
+    document.getElementById('bkJumlah').textContent       = fmt(jumlah);
+    document.getElementById('bkJumlahBayar').textContent  = fmt(jumlahBayar);
+    document.getElementById('bkFaedah').textContent       = fmt(jumlahFaedah);
+    document.getElementById('bkDividenTotal').textContent = fmt(totalDividen);
+    document.getElementById('bkNilaiAkhir').textContent   = fmt(nilaiAkhir);
+
+    const bkNet = document.getElementById('bkNetProfit');
+    bkNet.textContent = (netProfit >= 0 ? '+' : '-') + fmt(netProfit);
+    bkNet.className   = 'bk-val ' + (netProfit >= 0 ? 'green' : 'red');
+
+    // Verdict
+    const vBox  = document.getElementById('verdictBox');
+    const vIcon = document.getElementById('verdictIcon');
+    const vTitle = document.getElementById('verdictTitle');
+    const vDesc  = document.getElementById('verdictDesc');
+
+    const ansuranBulanan = ansuran.toFixed(2);
+    const dividenBulanan = (dividenTahunan / 12).toFixed(2);
+
+    if (netProfit > 0 && profitTahunan > 0) {
+      vBox.className = 'verdict positive';
+      vIcon.textContent = '🚀';
+      vTitle.textContent = 'Pelaburan Berbaloi!';
+      vDesc.textContent = `Dengan dividen ASB ${kadarDividen.toFixed(2)}% setahun dan kadar pinjaman ${kadarPinjaman.toFixed(2)}%, anda akan mendapat keuntungan bersih ${fmt(netProfit)} selepas ${tempoh} tahun. Ansuran RM ${Number(ansuranBulanan).toLocaleString('ms-MY', {minimumFractionDigits:2})} / bulan, dividen tahunan RM ${dividenTahunan.toLocaleString('ms-MY', {minimumFractionDigits:2})} — spread positif!`;
+    } else if (netProfit > 0 && profitTahunan <= 0) {
+      vBox.className = 'verdict neutral';
+      vIcon.textContent = '⚖️';
+      vTitle.textContent = 'Untung Jangka Panjang';
+      vDesc.textContent = `Bayaran bulanan (RM ${Number(ansuranBulanan).toLocaleString('ms-MY', {minimumFractionDigits:2})}) melebihi dividen bulanan, tetapi dengan kuasa kompaun, jumlah akhir ASB masih melebihi jumlah yang dibayar. Berbaloi jika anda ada aliran tunai untuk tampung perbezaan.`;
+    } else {
+      vBox.className = 'verdict negative';
+      vIcon.textContent = '⚠️';
+      vTitle.textContent = 'Semak Semula Strategi';
+      vDesc.textContent = `Pada kadar ini, kos pinjaman melebihi dividen yang dijangka. Cuba kurangkan kadar pinjaman atau pilih tempoh lebih pendek. Hubungi Atikah untuk dapatkan kadar terbaik yang tersedia.`;
+    }
+
+    // WhatsApp message
+    const msg = `Salam Kak Tikah! Saya dah guna kalkulator ASBF. Jumlah: RM${jumlah.toLocaleString('ms-MY')}, Tempoh: ${tempoh} tahun, Kadar pinjaman: ${kadarPinjaman}%, Ansuran bulanan: ${fmt(ansuran)}. Boleh bantu saya semak kelayakan?`;
+    document.getElementById('waLink').href = `https://api.whatsapp.com/send?phone=601111410293&text=${encodeURIComponent(msg)}`;
+  }
+
+  function resetCalc() {
+    document.getElementById('sliderJumlah').value = 100000;
+    document.getElementById('sliderTempoh').value = 15;
+    document.getElementById('sliderKadarPinjaman').value = 4.5;
+    document.getElementById('sliderDividen').value = 5.5;
+    update();
+  }
+
+  // Init
+  update();
+</script>
+
+</body>
+</html>
